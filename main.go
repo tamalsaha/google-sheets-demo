@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"strconv"
 	"time"
 
 	"golang.org/x/net/context"
@@ -26,7 +25,7 @@ type SheetInfo struct {
 }
 
 func main() {
-	si := NewSheet("1oVgOU17GRh9CPLVG2cwMbLygMH1sGMpu9W6Iqogx-G8") // Share this sheet with the service account email
+	si := NewSheet("1evwv2ON94R38M-Lkrw8b6dpVSkRYHUWsNOuI7X0_-zA") // Share this sheet with the service account email
 	info := LicenseInfo{
 		Name:      "Fahim Abrar",
 		Email:     "fahimabrar@appscode.com",
@@ -72,7 +71,7 @@ func (si *SheetInfo) getCellData(row, column int64) (string, error) {
 	return val, nil
 }
 
-func (si *SheetInfo) updateCellData(row, column int64, data string, formatCell bool) error {
+func (si *SheetInfo) updateRowData(row int64, data []string, formatCell bool) error {
 	var format *sheets.CellFormat
 
 	if formatCell {
@@ -90,25 +89,28 @@ func (si *SheetInfo) updateCellData(row, column int64, data string, formatCell b
 		}
 	}
 
+	vals := make([]*sheets.CellData, 0, len(data))
+	for i := range data {
+		vals = append(vals, &sheets.CellData{
+			UserEnteredFormat: format,
+			UserEnteredValue: &sheets.ExtendedValue{
+				StringValue: &data[i],
+			},
+		})
+	}
+
 	req := []*sheets.Request{
 		{
 			UpdateCells: &sheets.UpdateCellsRequest{
 				Fields: "*",
 				Start: &sheets.GridCoordinate{
-					ColumnIndex: column,
+					ColumnIndex: 0,
 					RowIndex:    row,
 					SheetId:     si.CurrentSheetID,
 				},
 				Rows: []*sheets.RowData{
 					{
-						Values: []*sheets.CellData{
-							{
-								UserEnteredFormat: format,
-								UserEnteredValue: &sheets.ExtendedValue{
-									StringValue: &data,
-								},
-							},
-						},
+						Values: vals,
 					},
 				},
 			},
@@ -196,14 +198,7 @@ func (si *SheetInfo) ensureSheet(name string) (int64, error) {
 
 func (si *SheetInfo) ensureHeader() error {
 	headers := []string{"SL", "Name", "Email", "ClusterID", "Time"}
-	for i, header := range headers {
-		err := si.updateCellData(0, int64(i), header, true)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
+	return si.updateRowData(0, headers, true)
 }
 
 func (si *SheetInfo) findEmptyCell() (int64, error) {
@@ -234,44 +229,12 @@ func (si *SheetInfo) insertLicenseInfoInSheet(info LicenseInfo) error {
 		log.Fatal(err)
 	}
 
-	data, err := si.getCellData(row-1, 0)
-	if data == "SL" {
-		err = si.updateCellData(row, 0, "1", false)
-		if err != nil {
-			return err
-		}
-	} else {
-		sl, err := strconv.Atoi(data)
-		if err != nil {
-			return err
-		}
-
-		sl = sl + 1
-		err = si.updateCellData(row, 0, fmt.Sprintf("%d", sl), false)
-		if err != nil {
-			return err
-		}
+	vals := []string{
+		"1",
+		info.Name,
+		info.Email,
+		info.ClusterID,
+		time.Now().UTC().Format(time.RFC3339),
 	}
-
-	err = si.updateCellData(row, 1, info.Name, false)
-	if err != nil {
-		return err
-	}
-
-	err = si.updateCellData(row, 2, info.Email, false)
-	if err != nil {
-		return err
-	}
-
-	err = si.updateCellData(row, 3, info.ClusterID, false)
-	if err != nil {
-		return err
-	}
-
-	err = si.updateCellData(row, 4, time.Now().String(), false)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return si.updateRowData(row, vals, false)
 }
