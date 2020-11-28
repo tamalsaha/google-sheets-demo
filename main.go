@@ -71,6 +71,7 @@ func (si *SheetInfo) getCellData(row, column int64) (string, error) {
 	return val, nil
 }
 
+// ref: https://developers.google.com/sheets/api/guides/batchupdate
 func (si *SheetInfo) updateRowData(row int64, data []string, formatCell bool) error {
 	var format *sheets.CellFormat
 
@@ -128,6 +129,7 @@ func (si *SheetInfo) updateRowData(row int64, data []string, formatCell bool) er
 	return nil
 }
 
+// ref: https://developers.google.com/sheets/api/guides/batchupdate
 func (si *SheetInfo) appendRowData(data []string, formatCell bool) error {
 	var format *sheets.CellFormat
 
