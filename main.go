@@ -33,7 +33,7 @@ func main() {
 		ClusterID: "bad94a42-0210-4c81-b07a-99bae529ec14",
 	}
 
-	err := si.insertLicenseInfoInSheet(info)
+	err := si.appendLicenseInfoInSheet(info)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -273,7 +273,7 @@ func (si *SheetInfo) findEmptyCell() (int64, error) {
 	return 0, errors.New("no empty cell found")
 }
 
-func (si *SheetInfo) insertLicenseInfoInSheet(info LicenseInfo) error {
+func (si *SheetInfo) appendLicenseInfoInSheet(info LicenseInfo) error {
 	_, err := si.ensureSheet(info.Product)
 	if err != nil {
 		log.Fatal(err)
