@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="01e7c563-d6c0-4dc7-88d7-e2e3c17346c1" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -53,5 +54,9 @@
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
     <state x="788" y="389" width="400" height="327" key="#Go_Modules/67.27.1853.1053/1920.0.1920.1080@67.27.1853.1053" timestamp="1606555789990" />
+    <state x="656" y="257" width="672" height="678" key="search.everywhere.popup" timestamp="1606567084170">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state x="656" y="257" width="672" height="678" key="search.everywhere.popup/67.27.1853.1053/1920.0.1920.1080@67.27.1853.1053" timestamp="1606567084170" />
   </component>
 </project>
